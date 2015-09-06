@@ -8,6 +8,8 @@
 
 
 
+#include "linux_gpio.h"
+
 
 
 #define TEST_MAJOR_VERSION  (1)
@@ -17,7 +19,7 @@
 
 
 
-static const char *short_opts = ":h?";
+static const char *short_opts = ":hv?";
 static const char *help_str   = " ===============  Help  ===============\n"
                                 " Test name:  %s\n"
                                 " Test  ver:  %d.%d.%d\n"
