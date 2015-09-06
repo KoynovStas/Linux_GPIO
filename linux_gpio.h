@@ -38,6 +38,8 @@ class Linux_GPIO
         int  dev_open(unsigned int num_pin, GPIO_Direction direction);
         void dev_close(void);
 
+        int  get_value(void);
+
         unsigned int   get_num_pin(void){ return _num_pin; }
         GPIO_Direction get_direction(void){ return _direction; }
 

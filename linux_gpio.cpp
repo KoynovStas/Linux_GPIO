@@ -86,6 +86,30 @@ void Linux_GPIO::dev_close()
 
 
 
+int Linux_GPIO::get_value()
+{
+    int  ret;
+    char val = 0;
+
+    if( _dev_fd == -1 )
+        return -1;
+
+
+    lseek(_dev_fd, 0, SEEK_SET);
+    ret = read(_dev_fd, &val, 1);
+
+    if( ret != 1 )
+    {
+        _errno = ERROR_CANT_READ;
+        return -1;
+    }
+
+
+    return (val == '1');   //return 1 if GPIO is high, if GPIO is low return 0
+}
+
+
+
 const char *Linux_GPIO::strerror(GPIO_Error errno)
 {
 
