@@ -30,7 +30,7 @@ TEST_Action  action = Get;
 Linux_GPIO::GPIO_Direction direct = Linux_GPIO::GPIO_IN;
 
 
-static const char *short_opts = ":phv?";
+static const char *short_opts = ":p:udghv?";
 static const char *help_str   = " ===============  Help  ===============\n"
                                 " Test name:  %s\n"
                                 " Test  ver:  %d.%d.%d\n"
