@@ -33,18 +33,21 @@ class Linux_GPIO
         ~Linux_GPIO();
 
 
-         unsigned int get_num_pin(void){ return _num_pin; }
+        void dev_close(void);
 
-         GPIO_Error get_errno(void){ return _errno; }
+        unsigned int get_num_pin(void){ return _num_pin; }
+
+        GPIO_Error get_errno(void){ return _errno; }
+
+        static const char* strerror(GPIO_Error errno);
 
 
+    private:
 
-     private:
 
-
-         GPIO_Error   _errno;
-         int          _dev_fd;
-         unsigned int _num_pin;
+        GPIO_Error   _errno;
+        int          _dev_fd;
+        unsigned int _num_pin;
 };
 
 
