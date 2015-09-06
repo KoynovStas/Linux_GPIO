@@ -16,7 +16,9 @@ class Linux_GPIO
             ERROR_DEV_NOT_OPEN,
             ERROR_CANT_OPEN_DEV,
             ERROR_CANT_OPEN_EXPORT,
+            ERROR_CANT_EXPORT,
             ERROR_CANT_OPEN_DIRECTION,
+            ERROR_CANT_SET_DIRECTION,
             ERROR_CANT_READ,
             ERROR_CANT_WRITE
         };
@@ -33,9 +35,11 @@ class Linux_GPIO
         ~Linux_GPIO();
 
 
+        int  dev_open(unsigned int num_pin, GPIO_Direction direction);
         void dev_close(void);
 
-        unsigned int get_num_pin(void){ return _num_pin; }
+        unsigned int   get_num_pin(void){ return _num_pin; }
+        GPIO_Direction get_direction(void){ return _direction; }
 
         GPIO_Error get_errno(void){ return _errno; }
 
@@ -45,9 +49,13 @@ class Linux_GPIO
     private:
 
 
-        GPIO_Error   _errno;
-        int          _dev_fd;
-        unsigned int _num_pin;
+        GPIO_Error     _errno;
+        int            _dev_fd;
+        unsigned int   _num_pin;
+        GPIO_Direction _direction;
+
+        int gpio_export(unsigned int num_pin);
+        int set_direction(unsigned int num_pin, GPIO_Direction direction);
 };
 
 
