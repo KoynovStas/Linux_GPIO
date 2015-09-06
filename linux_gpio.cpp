@@ -154,10 +154,10 @@ int Linux_GPIO::down()
 
 
 
-const char *Linux_GPIO::strerror(GPIO_Error errno)
+const char* Linux_GPIO::strerror(GPIO_Error error)
 {
 
-    switch (errno)
+    switch (error)
     {
         case ERROR_DEV_NOT_OPEN:
             return "device is not open";

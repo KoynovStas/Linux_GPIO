@@ -47,7 +47,7 @@ class Linux_GPIO
 
         GPIO_Error get_errno(void){ return _errno; }
 
-        static const char* strerror(GPIO_Error errno);
+        static const char* strerror(GPIO_Error error);
 
 
     private:

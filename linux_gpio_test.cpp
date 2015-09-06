@@ -18,22 +18,43 @@
 
 
 
+enum TEST_Action{
+    Up,
+    Down,
+    Get
+};
 
-static const char *short_opts = ":hv?";
+
+unsigned int gpio_pin = 0;
+TEST_Action  action = Get;
+Linux_GPIO::GPIO_Direction direct = Linux_GPIO::GPIO_IN;
+
+
+static const char *short_opts = ":phv?";
 static const char *help_str   = " ===============  Help  ===============\n"
                                 " Test name:  %s\n"
                                 " Test  ver:  %d.%d.%d\n"
                                 " Build  time:  %s  %s\n\n"
                                 "Options:                      description:\n\n"
+                                "  -u   --up                   GPIO Up\n"
+                                "  -d   --down                 GPIO Down\n"
+                                "  -p   --pin                  Set number pin\n"
+                                "  -g   --get                  Get value GPIO\n"
+                                "       --direct               Set direction for GPIO. 0 is Out else is In\n"
                                 "  -v   --version              Display test version information\n"
                                 "  -h,  --help                 Display this information\n\n";
 
 
 
 static const struct option long_opts[] = {
-    { "version",      no_argument,       NULL, 'v' },
-    { "help",         no_argument,       NULL, 'h' },
-    { NULL,           no_argument,       NULL,  0  }
+    { "up",       no_argument,       NULL, 'u' },
+    { "down",     no_argument,       NULL, 'd' },
+    { "get",      no_argument,       NULL, 'g' },
+    { "pin",      required_argument, NULL, 'p' },
+    { "direct",   required_argument, NULL,  0  },
+    { "version",  no_argument,       NULL, 'v' },
+    { "help",     no_argument,       NULL, 'h' },
+    { NULL,       no_argument,       NULL,  0  }
 };
 
 
@@ -53,6 +74,21 @@ void processing_cmd(int argc, char *argv[])
         switch( opt )
         {
 
+            case 'u':
+                        action = Up;
+                        break;
+
+            case 'd':
+                        action = Down;
+                        break;
+
+            case 'g':
+                        action = Get;
+                        break;
+
+            case 'p':
+                        gpio_pin = atoi(optarg);
+                        break;
 
             case 'v':
                         printf("%s  version  %d.%d.%d\n", TEST_NAME, TEST_MAJOR_VERSION, TEST_MINOR_VERSION, TEST_PATCH_VERSION);
@@ -77,11 +113,15 @@ void processing_cmd(int argc, char *argv[])
             case 0:     // long options
 
 
-//                  if( strcmp( "name_options", long_opts[long_index].name ) == 0 )
-//                  {
-//                      //Processing of "name_options"
-//                      break;
-//                  }
+                  if( strcmp( "direct", long_opts[long_index].name ) == 0 )
+                  {
+                      if( atoi(optarg) == 0 )
+                          direct = Linux_GPIO::GPIO_OUT;
+                      else
+                          direct = Linux_GPIO::GPIO_IN;
+
+                      break;
+                  }
 
 
             default:
@@ -95,12 +135,73 @@ void processing_cmd(int argc, char *argv[])
 
 
 
+void run_test()
+{
+    int ret;
+
+
+    Linux_GPIO  gpio;
+
+
+    if( gpio.dev_open(gpio_pin, direct) != 0 )
+    {
+        printf("Error: %s\n", gpio.strerror(gpio.get_errno()));
+        exit(-1);
+    }
+
+
+    if( action == Get )
+    {
+        ret = gpio.get_value();
+
+        if( ret == -1 )
+        {
+            printf("Error: %s\n", gpio.strerror(gpio.get_errno()));
+            exit(-1);
+        }
+
+        printf("GPIO: %d  has value == %d\n", gpio_pin, ret);
+    }
+
+
+    if( action == Up )
+    {
+        ret = gpio.up();
+
+        if( ret == -1 )
+        {
+            printf("Error: %s\n", gpio.strerror(gpio.get_errno()));
+            exit(-1);
+        }
+
+        printf("GPIO: %d  was Up\n", gpio_pin);
+    }
+
+
+
+    if( action == Down )
+    {
+        ret = gpio.down();
+
+        if( ret == -1 )
+        {
+            printf("Error: %s\n", gpio.strerror(gpio.get_errno()));
+            exit(-1);
+        }
+
+        printf("GPIO: %d  was Down\n", gpio_pin);
+    }
+
+}
+
+
+
 int main(int argc, char *argv[])
 {
 
     processing_cmd(argc, argv);
 
-
+    run_test();
 
     return EXIT_SUCCESS; // good job
 }
