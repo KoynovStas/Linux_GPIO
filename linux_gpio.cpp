@@ -132,6 +132,28 @@ int Linux_GPIO::up()
 
 
 
+int Linux_GPIO::down()
+{
+    int ret;
+
+    if( _dev_fd == -1 )
+        return -1;
+
+
+    ret = write(_dev_fd, "0", 2);
+
+    if( ret != 2 )
+    {
+        _errno = ERROR_CANT_WRITE;
+        return -1;
+    }
+
+
+    return 0; //good job
+}
+
+
+
 const char *Linux_GPIO::strerror(GPIO_Error errno)
 {
 
