@@ -15,7 +15,9 @@
 
 
 
-Linux_GPIO::Linux_GPIO()
+Linux_GPIO::Linux_GPIO() :
+    _errno(ERROR_DEV_NOT_OPEN),
+    _dev_fd(-1)
 {
 }
 

@@ -32,6 +32,19 @@ class Linux_GPIO
          Linux_GPIO();
         ~Linux_GPIO();
 
+
+         unsigned int get_num_pin(void){ return _num_pin; }
+
+         GPIO_Error get_errno(void){ return _errno; }
+
+
+
+     private:
+
+
+         GPIO_Error   _errno;
+         int          _dev_fd;
+         unsigned int _num_pin;
 };
 
 
