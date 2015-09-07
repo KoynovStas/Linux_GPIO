@@ -8,6 +8,7 @@ Linux_GPIO is C++ class to work with GPIO in Linux over the filesystem.
 
 **The class has the following public methods:**
 ```C++
+int  dev_open(unsigned int num_pin);
 int  dev_open(unsigned int num_pin, GPIO_Direction direction);
 void dev_close(void);
 
@@ -15,8 +16,11 @@ int  get_value(void);
 int  up(void);
 int  down(void);
 
-unsigned int   get_num_pin(void){ return _num_pin; }
-GPIO_Direction get_direction(void){ return _direction; }
+
+unsigned int  get_num_pin(void){ return _num_pin; }
+int           set_direction(GPIO_Direction direction);
+int           get_direction(GPIO_Direction *direction);
+
 
 GPIO_Error get_errno(void){ return _errno; }
 
@@ -29,11 +33,13 @@ static const char* strerror(GPIO_Error error);
 ```C++
 enum GPIO_Error{
 
+    ERROR_INVALID_PARAM,
     ERROR_DEV_NOT_OPEN,
     ERROR_CANT_OPEN_DEV,
     ERROR_CANT_OPEN_EXPORT,
     ERROR_CANT_EXPORT,
     ERROR_CANT_OPEN_DIRECTION,
+    ERROR_CANT_GET_DIRECTION,
     ERROR_CANT_SET_DIRECTION,
     ERROR_CANT_READ,
     ERROR_CANT_WRITE
@@ -82,6 +88,29 @@ printf("GPIO: %d  has value == %d\n", gpio_pin, ret);
 gpio.dev_close();
 ```
 More details can be found in the test application: **[linux_gpio_test.cpp](./linux_gpio_test.cpp)**
+
+
+***
+<br/>
+## Test tool (**[linux_gpio_test](./linux_gpio_test.cpp)**)
+
+Up GPIO 80:
+```console
+# ./linux_gpio_test -p 80 -u --direction 0
+GPIO: 80  was Up
+```
+
+Down GPIO 80:
+```console
+# ./linux_gpio_test -p 80 -d --direction 0
+GPIO: 80  was Down
+```
+
+Get value of GPIO 80:
+```console
+# ./linux_gpio_test -g 80
+GPIO: 80  has value == 0
+```
 
 ***
 <br/>
