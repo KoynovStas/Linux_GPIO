@@ -13,11 +13,13 @@ class Linux_GPIO
 
         enum GPIO_Error{
 
+            ERROR_INVALID_PARAM,
             ERROR_DEV_NOT_OPEN,
             ERROR_CANT_OPEN_DEV,
             ERROR_CANT_OPEN_EXPORT,
             ERROR_CANT_EXPORT,
             ERROR_CANT_OPEN_DIRECTION,
+            ERROR_CANT_GET_DIRECTION,
             ERROR_CANT_SET_DIRECTION,
             ERROR_CANT_READ,
             ERROR_CANT_WRITE
@@ -35,6 +37,7 @@ class Linux_GPIO
         ~Linux_GPIO();
 
 
+        int  dev_open(unsigned int num_pin);
         int  dev_open(unsigned int num_pin, GPIO_Direction direction);
         void dev_close(void);
 
@@ -42,8 +45,11 @@ class Linux_GPIO
         int  up(void);
         int  down(void);
 
-        unsigned int   get_num_pin(void){ return _num_pin; }
-        GPIO_Direction get_direction(void){ return _direction; }
+
+        unsigned int  get_num_pin(void){ return _num_pin; }
+        int           set_direction(GPIO_Direction direction);
+        int           get_direction(GPIO_Direction *direction);
+
 
         GPIO_Error get_errno(void){ return _errno; }
 
@@ -56,10 +62,11 @@ class Linux_GPIO
         GPIO_Error     _errno;
         int            _dev_fd;
         unsigned int   _num_pin;
-        GPIO_Direction _direction;
 
+
+        int gpio_open(unsigned int num_pin);
         int gpio_export(unsigned int num_pin);
-        int set_direction(unsigned int num_pin, GPIO_Direction direction);
+
 };
 
 

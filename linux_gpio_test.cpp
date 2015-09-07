@@ -26,8 +26,8 @@ enum TEST_Action{
 
 
 unsigned int gpio_pin = 0;
-TEST_Action  action = Get;
-Linux_GPIO::GPIO_Direction direct = Linux_GPIO::GPIO_IN;
+TEST_Action  action   = Get;
+int direction         = -1; //not change
 
 
 static const char *short_opts = ":p:udghv?";
@@ -40,7 +40,9 @@ static const char *help_str   = " ===============  Help  ===============\n"
                                 "  -d   --down                 GPIO Down\n"
                                 "  -p   --pin                  Set number pin\n"
                                 "  -g   --get                  Get value GPIO\n"
-                                "       --direct               Set direction for GPIO. 0 is Out else is In\n"
+                                "       --direction            Set direction for GPIO: 0 is Out\n"
+                                "                                                      1 is In\n"
+                                "                                                     -1 not change\n"
                                 "  -v   --version              Display test version information\n"
                                 "  -h,  --help                 Display this information\n\n";
 
@@ -51,7 +53,7 @@ static const struct option long_opts[] = {
     { "down",     no_argument,       NULL, 'd' },
     { "get",      no_argument,       NULL, 'g' },
     { "pin",      required_argument, NULL, 'p' },
-    { "direct",   required_argument, NULL,  0  },
+    { "direction",required_argument, NULL,  0  },
     { "version",  no_argument,       NULL, 'v' },
     { "help",     no_argument,       NULL, 'h' },
     { NULL,       no_argument,       NULL,  0  }
@@ -113,13 +115,9 @@ void processing_cmd(int argc, char *argv[])
             case 0:     // long options
 
 
-                  if( strcmp( "direct", long_opts[long_index].name ) == 0 )
+                  if( strcmp( "direction", long_opts[long_index].name ) == 0 )
                   {
-                      if( atoi(optarg) == 0 )
-                          direct = Linux_GPIO::GPIO_OUT;
-                      else
-                          direct = Linux_GPIO::GPIO_IN;
-
+                      direction = atoi(optarg);
                       break;
                   }
 
@@ -143,11 +141,42 @@ void run_test()
     Linux_GPIO  gpio;
 
 
-    if( gpio.dev_open(gpio_pin, direct) != 0 )
+    if( gpio.dev_open(gpio_pin) != 0 )
     {
         printf("Error: %s\n", gpio.strerror(gpio.get_errno()));
         exit(-1);
     }
+
+
+    if( direction == 0 )
+    {
+        ret = gpio.set_direction(Linux_GPIO::GPIO_OUT);
+
+        if( ret == -1 )
+        {
+            printf("Error: %s\n", gpio.strerror(gpio.get_errno()));
+            exit(-1);
+        }
+
+        printf("GPIO: %d  Set direction OUT\n", gpio_pin);
+
+    }
+
+
+    if( direction == 1 )
+    {
+        ret = gpio.set_direction(Linux_GPIO::GPIO_IN);
+
+        if( ret == -1 )
+        {
+            printf("Error: %s\n", gpio.strerror(gpio.get_errno()));
+            exit(-1);
+        }
+
+        printf("GPIO: %d  Set direction IN\n", gpio_pin);
+
+    }
+
 
 
     if( action == Get )
