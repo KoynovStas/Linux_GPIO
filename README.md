@@ -61,8 +61,8 @@ More details see: **[linux_gpio.h](./linux_gpio.h)**
 
 **To start working, perform the following steps:**
 
-    * You need to include **[linux_gpio.h](./linux_gpio.h)** file in your **.cpp** file.
-    * And add file **[linux_gpio.cpp](./linux_gpio.cpp)** to list of source files to compile. (see an example)
+1. You need to include **[linux_gpio.h](./linux_gpio.h)** file in your **.cpp** file.
+2. And add file **[linux_gpio.cpp](./linux_gpio.cpp)** to list of source files to compile. (see an example)
 
 #### example:
 ```C++
