@@ -209,7 +209,7 @@ int Linux_GPIO::get_direction(GPIO_Direction *direction)
 
     if( !direction )
     {
-        _errno = ERROR_INVALID_PARAM;
+        _errno = ERROR_BAD_PARAM;
         return -1;
     }
 
@@ -258,8 +258,6 @@ const char* Linux_GPIO::strerror(GPIO_Error error)
 
     switch (error)
     {
-        case ERROR_INVALID_PARAM:
-            return "invalid param";
 
         case ERROR_DEV_NOT_OPEN:
             return "device is not open";
@@ -281,6 +279,9 @@ const char* Linux_GPIO::strerror(GPIO_Error error)
 
         case ERROR_CANT_SET_DIRECTION:
             return "cant set direct";
+
+        case ERROR_BAD_PARAM:
+            return "bad param";
 
         case ERROR_CANT_READ:
             return "cant read /sys/class/gpio/gpioX/value";

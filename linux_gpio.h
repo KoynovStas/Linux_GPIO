@@ -13,7 +13,6 @@ class Linux_GPIO
 
         enum GPIO_Error{
 
-            ERROR_INVALID_PARAM,
             ERROR_DEV_NOT_OPEN,
             ERROR_CANT_OPEN_DEV,
             ERROR_CANT_OPEN_EXPORT,
@@ -21,6 +20,7 @@ class Linux_GPIO
             ERROR_CANT_OPEN_DIRECTION,
             ERROR_CANT_GET_DIRECTION,
             ERROR_CANT_SET_DIRECTION,
+            ERROR_BAD_PARAM,
             ERROR_CANT_READ,
             ERROR_CANT_WRITE
         };
