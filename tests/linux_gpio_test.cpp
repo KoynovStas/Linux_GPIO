@@ -12,13 +12,30 @@
 
 
 
-#define TEST_MAJOR_VERSION  (1)
-#define TEST_MINOR_VERSION  (0)
-#define TEST_PATCH_VERSION  (0)
+#define TEST_MAJOR_VERSION  1
+#define TEST_MINOR_VERSION  0
+#define TEST_PATCH_VERSION  0
 
 
 
-enum TEST_Action{
+
+
+#define TEST_DEF_TO_STR_(text) #text
+#define TEST_DEF_TO_STR(arg) TEST_DEF_TO_STR_(arg)
+
+
+#define TEST_MAJOR_VERSION_STR  TEST_DEF_TO_STR(TEST_MAJOR_VERSION)
+#define TEST_MINOR_VERSION_STR  TEST_DEF_TO_STR(TEST_MINOR_VERSION)
+#define TEST_PATCH_VERSION_STR  TEST_DEF_TO_STR(TEST_PATCH_VERSION)
+
+#define TEST_VERSION_STR  TEST_MAJOR_VERSION_STR "." \
+                          TEST_MINOR_VERSION_STR "." \
+                          TEST_PATCH_VERSION_STR
+
+
+
+
+enum TEST_Action {
     Up,
     Down,
     Get
@@ -31,20 +48,22 @@ int direction         = -1; //not change
 
 
 static const char *short_opts = ":p:udghv?";
-static const char *help_str   = " ===============  Help  ===============\n"
-                                " Test name:  %s\n"
-                                " Test  ver:  %d.%d.%d\n"
-                                " Build  time:  %s  %s\n\n"
-                                "Options:                      description:\n\n"
-                                "  -u   --up                   GPIO Up\n"
-                                "  -d   --down                 GPIO Down\n"
-                                "  -p   --pin                  Set number pin\n"
-                                "  -g   --get                  Get value GPIO\n"
-                                "       --direction            Set direction for GPIO: 0 is Out\n"
-                                "                                                      1 is In\n"
-                                "                                                     -1 not change\n"
-                                "  -v   --version              Display test version information\n"
-                                "  -h,  --help                 Display this information\n\n";
+static const char *help_str   =
+        " ===============  Help  ===============\n"
+        " Test   name:  " TEST_NAME        "\n"
+        " Test    ver:  " TEST_VERSION_STR "\n"
+        " Build  date:  " __DATE__         "\n"
+        " Build  time:  " __TIME__         "\n\n"
+        "Options:                      description:\n\n"
+        "  -u   --up                   GPIO Up\n"
+        "  -d   --down                 GPIO Down\n"
+        "  -p   --pin                  Set number pin\n"
+        "  -g   --get                  Get value GPIO\n"
+        "       --direction            Set direction for GPIO: 0 is Out\n"
+        "                                                      1 is In\n"
+        "                                                     -1 not change\n"
+        "  -v   --version              Display test version information\n"
+        "  -h,  --help                 Display this information\n\n";
 
 
 
@@ -93,13 +112,13 @@ void processing_cmd(int argc, char *argv[])
                         break;
 
             case 'v':
-                        printf("%s  version  %d.%d.%d\n", TEST_NAME, TEST_MAJOR_VERSION, TEST_MINOR_VERSION, TEST_PATCH_VERSION);
+                        puts(TEST_NAME "  version  " TEST_VERSION_STR "\n");
                         exit(EXIT_SUCCESS);
                         break;
 
             case 'h':
 
-                        printf(help_str, TEST_NAME, TEST_MAJOR_VERSION, TEST_MINOR_VERSION, TEST_PATCH_VERSION, __DATE__, __TIME__);
+                        puts(help_str);
                         exit(EXIT_SUCCESS);
                         break;
             case '?':
