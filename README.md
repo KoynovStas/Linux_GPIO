@@ -55,8 +55,7 @@ enum GPIO_Direction{
 
 More details see: **[linux_gpio.h](./linux_gpio.h)**
 
-***
-<br/>
+
 ## Usage
 
 **To start working, perform the following steps:**
@@ -87,33 +86,30 @@ printf("GPIO: %d  has value == %d\n", gpio_pin, ret);
 
 gpio.dev_close();
 ```
-More details can be found in the test application: **[linux_gpio_test.cpp](./linux_gpio_test.cpp)**
+More details can be found in the test application: **[linux_gpio_test.cpp](./tests/linux_gpio_test.cpp)**
 
 
-***
-<br/>
-## Test tool (**[linux_gpio_test](./linux_gpio_test.cpp)**)
+
+## Test tool (**[linux_gpio_test](./tests/linux_gpio_test.cpp)**)
 
 Up GPIO 80:
 ```console
-# ./linux_gpio_test -p 80 -u --direction 0
+# ./linux_gpio_test --pin 80 --up --direction 0
 GPIO: 80  was Up
 ```
 
 Down GPIO 80:
 ```console
-# ./linux_gpio_test -p 80 -d --direction 0
+# ./linux_gpio_test --pin 80 --down --direction 0
 GPIO: 80  was Down
 ```
 
 Get value of GPIO 80:
 ```console
-# ./linux_gpio_test -g 80
+# ./linux_gpio_test --get 80
 GPIO: 80  has value == 0
 ```
 
-***
-<br/>
 ## License
 
-[BSD](./LICENSE).
+[BSD-3-Clause](./LICENSE).
