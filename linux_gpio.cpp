@@ -72,11 +72,8 @@ int Linux_GPIO::dev_open(unsigned int num_pin, Linux_GPIO::GPIO_Direction direct
 
 void Linux_GPIO::dev_close()
 {
-
     if( _dev_fd != -1 )
         close(_dev_fd);
-
-
 
     _errno     = ERROR_DEV_NOT_OPEN;
     _dev_fd    = -1;

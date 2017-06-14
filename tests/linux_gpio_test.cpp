@@ -35,7 +35,8 @@
 
 
 
-enum TEST_Action {
+enum TEST_Action
+{
     Up,
     Down,
     Get
@@ -63,7 +64,7 @@ static const char *help_str   =
         "                                                    1 is In\n"
         "                                                   -1 not change\n"
         "  -v  --version             Display test version information\n"
-        "  -h  --help                Display this information\n\n";
+        "  -h  --help                Display this information\n";
 
 
 
@@ -154,33 +155,34 @@ void processing_cmd(int argc, char *argv[])
 
 
 
+void process_error(const Linux_GPIO &gpio, int ret)
+{
+    if( ret == -1 )
+    {
+        printf("Error: %s\n", gpio.strerror(gpio.get_errno()));
+        exit(EXIT_FAILURE);
+    }
+}
+
+
+
 void run_test()
 {
     int ret;
-
-
     Linux_GPIO  gpio;
 
 
-    if( gpio.dev_open(gpio_pin) != 0 )
-    {
-        printf("Error: %s\n", gpio.strerror(gpio.get_errno()));
-        exit(-1);
-    }
+    ret = gpio.dev_open(gpio_pin);
+    process_error(gpio, ret);
 
 
     if( direction == 0 )
     {
         ret = gpio.set_direction(Linux_GPIO::GPIO_OUT);
 
-        if( ret == -1 )
-        {
-            printf("Error: %s\n", gpio.strerror(gpio.get_errno()));
-            exit(-1);
-        }
+        process_error(gpio, ret);
 
         printf("GPIO: %d  Set direction OUT\n", gpio_pin);
-
     }
 
 
@@ -188,14 +190,9 @@ void run_test()
     {
         ret = gpio.set_direction(Linux_GPIO::GPIO_IN);
 
-        if( ret == -1 )
-        {
-            printf("Error: %s\n", gpio.strerror(gpio.get_errno()));
-            exit(-1);
-        }
+        process_error(gpio, ret);
 
         printf("GPIO: %d  Set direction IN\n", gpio_pin);
-
     }
 
 
@@ -204,11 +201,7 @@ void run_test()
     {
         ret = gpio.get_value();
 
-        if( ret == -1 )
-        {
-            printf("Error: %s\n", gpio.strerror(gpio.get_errno()));
-            exit(-1);
-        }
+        process_error(gpio, ret);
 
         printf("GPIO: %d  has value == %d\n", gpio_pin, ret);
     }
@@ -218,11 +211,7 @@ void run_test()
     {
         ret = gpio.up();
 
-        if( ret == -1 )
-        {
-            printf("Error: %s\n", gpio.strerror(gpio.get_errno()));
-            exit(-1);
-        }
+        process_error(gpio, ret);
 
         printf("GPIO: %d  was Up\n", gpio_pin);
     }
@@ -233,25 +222,19 @@ void run_test()
     {
         ret = gpio.down();
 
-        if( ret == -1 )
-        {
-            printf("Error: %s\n", gpio.strerror(gpio.get_errno()));
-            exit(-1);
-        }
+        process_error(gpio, ret);
 
         printf("GPIO: %d  was Down\n", gpio_pin);
     }
-
 }
 
 
 
 int main(int argc, char *argv[])
 {
-
     processing_cmd(argc, argv);
 
     run_test();
 
-    return EXIT_SUCCESS; // good job
+    return EXIT_SUCCESS;
 }

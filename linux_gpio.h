@@ -46,12 +46,12 @@ class Linux_GPIO
         int  down(void);
 
 
-        unsigned int  get_num_pin(void){ return _num_pin; }
+        unsigned int  get_num_pin(void) const { return _num_pin; }
         int           set_direction(GPIO_Direction direction);
         int           get_direction(GPIO_Direction *direction);
 
 
-        GPIO_Error get_errno(void){ return _errno; }
+        GPIO_Error get_errno(void) const { return _errno; }
 
         static const char* strerror(GPIO_Error error);
 
