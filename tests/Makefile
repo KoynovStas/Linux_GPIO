@@ -1,4 +1,5 @@
 CPPFLAGS += -O2  -s  -Wall
+CPPFLAGS += -I..
 CPP       =  g++
 
 
@@ -15,15 +16,15 @@ all: clean  $(TESTS)
 
 .PHONY: clean
 clean:
-	-@rm  *.o
-	-@rm  *.*~
-	-@rm  $(TESTS)
+	-@rm -f *.o
+	-@rm -f  *.*~
+	-@rm -f  $(TESTS)
 
 
 
 .PHONY: $(TESTS)
 $(TESTS):
-	$(CPP)  $@.cpp linux_gpio.cpp -o $@  -DTEST_NAME='"$@"'  $(CPPFLAGS)
+	$(CPP)  $@.cpp ../linux_gpio.cpp -o $@  -DTEST_NAME='"$@"'  $(CPPFLAGS)
 	@echo "  ---- Compiled $@ ----"
 	@echo ""
 
