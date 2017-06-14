@@ -47,35 +47,57 @@ TEST_Action  action   = Get;
 int direction         = -1; //not change
 
 
-static const char *short_opts = ":p:udghv?";
+
 static const char *help_str   =
         " ===============  Help  ===============\n"
         " Test   name:  " TEST_NAME        "\n"
         " Test    ver:  " TEST_VERSION_STR "\n"
         " Build  date:  " __DATE__         "\n"
         " Build  time:  " __TIME__         "\n\n"
-        "Options:                      description:\n\n"
-        "  -u   --up                   GPIO Up\n"
-        "  -d   --down                 GPIO Down\n"
-        "  -p   --pin                  Set number pin\n"
-        "  -g   --get                  Get value GPIO\n"
-        "       --direction            Set direction for GPIO: 0 is Out\n"
-        "                                                      1 is In\n"
-        "                                                     -1 not change\n"
-        "  -v   --version              Display test version information\n"
-        "  -h,  --help                 Display this information\n\n";
+        "Options:                    description:\n\n"
+        "     --up                   GPIO Up\n"
+        "     --down                 GPIO Down\n"
+        "     --pin         [value]  Set number pin\n"
+        "     --get                  Get value GPIO\n"
+        "     --direction   [value]  Set direction for GPIO: 0 is Out\n"
+        "                                                    1 is In\n"
+        "                                                   -1 not change\n"
+        "  -v  --version             Display test version information\n"
+        "  -h  --help                Display this information\n\n";
 
 
 
-static const struct option long_opts[] = {
-    { "up",       no_argument,       NULL, 'u' },
-    { "down",     no_argument,       NULL, 'd' },
-    { "get",      no_argument,       NULL, 'g' },
-    { "pin",      required_argument, NULL, 'p' },
-    { "direction",required_argument, NULL,  0  },
-    { "version",  no_argument,       NULL, 'v' },
-    { "help",     no_argument,       NULL, 'h' },
-    { NULL,       no_argument,       NULL,  0  }
+
+
+// indexes for long_opt function
+enum
+{
+    cmd_opt_help    = 'h',
+    cmd_opt_version = 'v',
+
+    cmd_opt_up,
+    cmd_opt_down,
+    cmd_opt_pin,
+    cmd_opt_get,
+    cmd_opt_direction
+};
+
+
+
+static const char *short_opts = "hv";
+
+static const struct option long_opts[] =
+{
+    { "version",  no_argument,       NULL, cmd_opt_version   },
+    { "help",     no_argument,       NULL, cmd_opt_help      },
+
+    { "up",       no_argument,       NULL, cmd_opt_up        },
+    { "down",     no_argument,       NULL, cmd_opt_down      },
+    { "pin",      required_argument, NULL, cmd_opt_pin       },
+    { "get",      no_argument,       NULL, cmd_opt_get       },
+    { "direction",required_argument, NULL, cmd_opt_direction },
+
+    { NULL,       no_argument,       NULL, 0                 }
 };
 
 
@@ -84,70 +106,50 @@ static const struct option long_opts[] = {
 
 void processing_cmd(int argc, char *argv[])
 {
-
-    int opt, long_index;
-
+    int opt;
 
 
-    opt = getopt_long(argc, argv, short_opts, long_opts, &long_index);
-    while( opt != -1 )
+    while( (opt = getopt_long(argc, argv, short_opts, long_opts, NULL)) != -1 )
     {
         switch( opt )
         {
 
-            case 'u':
-                        action = Up;
+            case cmd_opt_help:
+                        puts(help_str);
+                        exit(EXIT_SUCCESS);
                         break;
 
-            case 'd':
-                        action = Down;
-                        break;
-
-            case 'g':
-                        action = Get;
-                        break;
-
-            case 'p':
-                        gpio_pin = atoi(optarg);
-                        break;
-
-            case 'v':
+            case cmd_opt_version:
                         puts(TEST_NAME "  version  " TEST_VERSION_STR "\n");
                         exit(EXIT_SUCCESS);
                         break;
 
-            case 'h':
-
-                        puts(help_str);
-                        exit(EXIT_SUCCESS);
-                        break;
-            case '?':
-                        printf("Unsupported option: -%c see help\n", optopt);
-                        exit(EXIT_SUCCESS);
-                        break;
-            case ':':
-                        printf("Option -%c requires an operand see help\n", optopt);
-                        exit(EXIT_SUCCESS);
+            case cmd_opt_up:
+                        action = Up;
                         break;
 
+            case cmd_opt_down:
+                        action = Down;
+                        break;
 
-            case 0:     // long options
+            case cmd_opt_pin:
+                        gpio_pin = atoi(optarg);
+                        break;
 
+            case cmd_opt_get:
+                        action = Get;
+                        break;
 
-                  if( strcmp( "direction", long_opts[long_index].name ) == 0 )
-                  {
-                      direction = atoi(optarg);
-                      break;
-                  }
-
+            case cmd_opt_direction:
+                        direction = atoi(optarg);
+                        break;
 
             default:
-                  break;
+                        puts("for more detail see help\n\n");
+                        exit(EXIT_FAILURE);
+                        break;
         }
-
-        opt = getopt_long(argc, argv, short_opts, long_opts, &long_index);
     }
-
 }
 
 
